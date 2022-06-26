@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Controller;
+namespace App\System\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
-use App\Security\EmailVerifier;
+use App\System\Entity\User;
+use App\System\Form\RegistrationFormType;
+use App\System\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -34,7 +32,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-            $userPasswordHasher->hashPassword(
+                $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
@@ -44,19 +42,12 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('hetzner@manager.com', 'Mail Bot'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
             // do anything else you need here, like send an email
 
             return $this->redirectToRoute('_preview_error');
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render('@base/registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }
