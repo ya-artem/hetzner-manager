@@ -33,11 +33,11 @@ RUN apk add --no-cache php8 \
     php8-dom \
     php8-pdo_mysql \
     php8-pdo_sqlite \
-    php8-tokenizer \
-    php8-pecl-redis
+    php8-tokenizer
 
 RUN docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
 
+RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
 # Source code
 RUN chown www-data:www-data /var/www
 COPY --chown=www-data:www-data ./ /var/www
