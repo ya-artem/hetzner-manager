@@ -33,6 +33,8 @@ RUN apk add --no-cache php8 \
     php8-dom \
     php8-pdo_mysql \
     php8-pdo_sqlite \
+    nodejs \
+    yarn \
     php8-tokenizer
 
 RUN docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
